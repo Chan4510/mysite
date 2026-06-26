@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="robots" content="none" />
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="茶菓" content="茶菓" />
+        <meta name="author" content="C茶菓" />
+        <link rel="stylesheet" href="/css/style-backgroudColor.css" />
+        <link rel="stylesheet" href="/css/style-calendar.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Noto+Serif+JP:wght@300;500&family=Montserrat:wght@300;500&display=swap"
+            rel="stylesheet"
+        />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        <link rel="stylesheet" href="/style-backgroudColor.css" />
+        <title>SECTOR：Tools</title>
+    </head>
+    <body>
+        <header>
+            <!--ダークモードのスイッチ-->
+            <!--labelのforとinputのidが一致する必要がある-->
+            <div class="mode-switch">
+                <label for="switch" class="switch_label">
+                    <div class="switch">
+                        <input type="checkbox" id="switch" />
+                        <span class="Mode">dark</span>
+                        <div class="circle"></div>
+                        <div class="base"></div>
+                    </div>
+                </label>
+            </div>
+            <div class="logo"><h1>SECTOR：C-C</h1></div>
+        </header>
+        <!--ここまでヘッダー-->
+        <!--ここからメイン-->
+        <main>
+            <div class="main-content">
+                <h1>カレンダー作成ツール</h1>
+                <p>使い方：</p>
+                <p>
+                    壁紙にしたい画像を挿入し、カレンダーをカスタマイズ<br />完成したら、右クリックで「名前を付けて画像を保存」<br />月齢も反映可能！
+                </p>
+            </div>
+            <div class="editor-container">
+                <!--設定パネル-->
+                <aside class="controls">
+                    <section>
+                        <h3>デバイスサイズ</h3>
+                        <button
+                            onclick="changeSize(1320, 2868)"
+                            class="device-button"
+                        >
+                            スマホ
+                        </button>
+                        <button
+                            onclick="changeSize(2048, 2732)"
+                            class="device-button"
+                        >
+                            タブレット
+                        </button>
+                    </section>
+                    <section>
+                        <label for="bg-upload" class="uploadArea"
+                            >背景画像をアップロード
+                            <input
+                                type="file"
+                                id="bg-upload"
+                                accept="image/*"
+                                class="upload-input"
+                        /></label>
+                    </section>
+                    <section>
+                        <h3>カスタム</h3>
+                        <label for="year month" class="custom-container">
+                            <input
+                                type="number"
+                                id="year"
+                                value="2026"
+                                onchange="update()"
+                                class="year-input"
+                            />
+                            <select
+                                id="month"
+                                onchange="update()"
+                                class="month-input"
+                            >
+                                <option value="0">January</option>
+                                <option value="1">February</option>
+                                <option value="2">March</option>
+                                <option value="3">April</option>
+                                <option value="4">May</option>
+                                <option value="5">June</option>
+                                <option value="6">July</option>
+                                <option value="7">August</option>
+                                <option value="8">September</option>
+                                <option value="9">October</option>
+                                <option value="10">November</option>
+                                <option value="11">December</option>
+                            </select>
+                        </label>
+                    </section>
+                    <section>
+                        <select
+                            id="font"
+                            onchange="update()"
+                            class="font-input"
+                        >
+                            <option value="'Yu Mincho', serif">游明朝</option>
+                            <option value="'Yu Gothic', sans-serif">
+                                游ゴシック
+                            </option>
+                            <option value="'Meiryo', sans-serif">
+                                メイリオ
+                            </option>
+                            <option value="'Playfair Display', serif">
+                                Playfair Display
+                            </option>
+                            <option value="'Noto Serif JP', serif">
+                                源ノ明朝 / Noto Serif
+                            </option>
+                            <option value="'Montserrat', sans-serif">
+                                Montserrat
+                            </option>
+                        </select>
+                        <div class="font-custom">
+                            <span>フォントサイズ：</span>
+                            <input
+                                type="range"
+                                id="size-slider"
+                                min="30"
+                                max="60"
+                                value="40"
+                                oninput="update()"
+                            />
+                        </div>
+                        <div class="colors-container">
+                            <input
+                                type="color"
+                                id="color"
+                                value="#ffffff"
+                                onchange="update()"
+                                class="colors-button"
+                            />
+                            <div class="colors-row">
+                                <button
+                                    class="colors-button"
+                                    style="background-color: #ffffff"
+                                    onclick="applyQuickColor('#ffffff')"
+                                ></button>
+                                <button
+                                    class="colors-button"
+                                    style="background-color: #000000"
+                                    onclick="applyQuickColor('#000000')"
+                                ></button>
+                                <button
+                                    class="colors-button"
+                                    style="background-color: #bbbbbb"
+                                    onclick="applyQuickColor('#bbbbbb')"
+                                ></button>
+                                <button
+                                    class="colors-button"
+                                    style="background-color: #586275"
+                                    onclick="applyQuickColor('#586275')"
+                                ></button>
+                            </div>
+                        </div>
+                    </section>
+                    <section>
+                        <div class="moon-container">
+                            <h3>月齢オプション</h3>
+                            <label class="moon-custom">
+                                <input
+                                    type="checkbox"
+                                    id="show-moon"
+                                    checked
+                                    onchange="update()"
+                                />月齢の表示
+                            </label>
+                            <div style="margin: 10px 20px">
+                                <span style="font-size: 20px; margin: auto"
+                                    >サイズ:</span
+                                >
+                                <input
+                                    type="range"
+                                    id="moon-size"
+                                    min="10"
+                                    max="60"
+                                    value="32"
+                                    oninput="update()"
+                                />
+                            </div>
+                        </div>
+                    </section>
+                    <section>
+                        <h3>位置</h3>
+                        <div class="pos-control">
+                            <button onclick="setPos('top')" class="pos-button">
+                                Top
+                            </button>
+                            <button
+                                onclick="setPos('center')"
+                                class="pos-button"
+                            >
+                                Center
+                            </button>
+                            <button
+                                onclick="setPos('bottom')"
+                                class="pos-button"
+                            >
+                                Bottom
+                            </button>
+                        </div>
+                    </section>
+                    <section>
+                        <h3>書き出し</h3>
+                        <button
+                            onclick="saveWallpaper()"
+                            class="device-button"
+                            style="
+                                background-color: #c0c3d7;
+                                color: #000000;
+                                font-size: large;
+                            "
+                        >
+                            画像を保存する
+                        </button>
+                    </section>
+                </aside>
+                <!--プレビューエリア-->
+                <div class="editor-main">
+                    <div id="preview-viewport">
+                        <div id="wallpaper-canvas">
+                            <div id="calendar-area" class="pos-bottom">
+                                <div id="month-title">
+                                    <span
+                                        id="year-num"
+                                        style="
+                                            font-size: 0.5em;
+                                            display: block;
+                                            opacity: 0.8;
+                                        "
+                                        >2026</span
+                                    >
+                                    <span id="month-name">june</span>
+                                </div>
+                                <table id="cal-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="sun">Su.</th>
+                                            <th>Mo.</th>
+                                            <th>Tu.</th>
+                                            <th>We.</th>
+                                            <th>Th.</th>
+                                            <th>Fr.</th>
+                                            <th class="sat">Sa.</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cal-body"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <script>
+            // 1. 画像挿入の処理（FileReader）
+            // 2. カレンダー描画のロジック
+            // 3. 保存ボタンのクリックイベント
+            console.log("論理的整合性、ヨシ！");
+        </script>
+    </body>
+    <script src="/js/background.js"></script>
+    <script src="/js/calendar.js"></script>
+</html>

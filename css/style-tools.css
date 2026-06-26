@@ -1,0 +1,21 @@
+main {
+    background-color: #373e59;
+    position: relative;
+    width: 80%;
+    left: 10%;
+    display: flex;
+    flex-wrap:wrap;
+}
+
+section {
+    background-image:url(./image/calendar.png);
+    background-size: 100%;
+    width: 400px;
+    height: 300px;
+    margin: 30px;
+    position: relative;
+}
+
+.paragraph {
+    bottom: 0px;
+}

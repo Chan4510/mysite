@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta name="robots" content="none">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="茶菓" content="茶菓">
+    <meta name="author" content="C茶菓">
+    <link rel="stylesheet" href="/css/style-backgroudColor.css">
+    <link rel="stylesheet" href="/css/style-inSANE-books.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+    <title>SECTOR：Tools</title>
+</head>
+<body class="dark">
+    <header>
+        <!--ダークモードのスイッチ-->
+        <!--labelのforとinputのidが一致する必要がある-->
+        <div class="mode-switch">
+            <label for="switch" class="switch_label">
+                    <div class="switch">
+                        <input type="checkbox" id="switch" />
+                        <span class="Mode">dark</span>
+                        <div class="circle"></div>
+                        <div class="base"></div>
+                    </div>
+            </label>
+        </div>
+        <div class="logo"><h1>SECTOR：C-C</h1></div>
+    </header>
+    <!--ここまでヘッダー-->
+    <!--ここからメイン-->
+    <main>
+        <div class="db-container">
+            <nav class="category-nav">
+                <button class="cat-btn active" onclick="switchCategory(0)">アビリティ</button>
+                <button class="cat-btn" onclick="switchCategory(1)">狂気</button>
+            </nav>
+
+            <div class="control-panel">
+                <div class="version-toggle-group">
+                    <button type="button" class="version-btn active" onclick="setVersion(this, 'new')">新版</button>
+                    <button type="button" class="version-btn" onclick="setVersion(this, 'old')">旧版</button>
+                </div>
+                <input type="hidden" id="version-status" value="new">
+
+                <select id="tag-filter" onchange="selectTagOption(this.value)">
+                </select>
+
+                <input type="text" id="keyword-search" oninput="renderAndFilter()" placeholder="キーワード検索...">
+            </div>
+
+            <div class="table-wrapper">
+                <table id="data-table">
+                    <thead id="table-head"></thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+<script src="/js/background.js"></script>
+<script src="/js/inSANE-books.js"></script>
+<script src="/js/inSANE-ability-new.js"></script>
+<script src="/js/inSANE-ability-old.js"></script>
+<script src="/js/inSANE-mad-new.js"></script>
+<script src="/js/inSANE-mad-old.js"></script>
+
+</html>

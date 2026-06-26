@@ -1,0 +1,232 @@
+/* =========================================================================
+   1. 基本コンテナ・全体設定
+   ========================================================================= */
+.db-container {
+    background: #111;
+    color: #fff;
+    font-family: sans-serif;
+    margin: 5px;
+}
+
+/* カテゴリナビ（最上部：アビリティ／狂気） */
+.category-nav {
+    display: flex;
+    background: #222;
+    border-bottom: 2px solid #444;
+}
+.cat-btn {
+    flex: 1;
+    padding: 15px;
+    background: none;
+    color: #888;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1em;
+}
+.cat-btn.active {
+    color: #fff;
+    background: #333;
+    border-bottom: 3px solid #600;
+    font-weight: bold;
+}
+
+/* =========================================================================
+    2. コントロールパネル（検索・新旧ボタン）
+   ========================================================================= */
+.control-panel {
+    gap: 10px;
+    padding: 10px;
+    background: #1a1a1a;
+}
+.control-panel select,
+.control-panel input {
+    background: #222;
+    color: #fff;
+    border: 1px solid #444;
+    margin: 15px 15px 15px 8px;
+    width: 20%;
+    padding: 15px;
+}
+.control-panel input {
+    flex: 1;
+}
+
+/* 新版・旧版トグルボタン */
+.version-toggle-group {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+}
+.version-btn {
+    background: #222;
+    color: #666;
+    border: 1px solid #444;
+    padding: 1% 23%;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+.version-btn.active {
+    background: #600; /* インセイン特有の血の赤 */
+    color: #fff;
+    border-color: #f00;
+    box-shadow: 0 0 8px #f00;
+}
+
+/* =========================================================================
+    3. タグ絞り込みボタンのグループ
+   ========================================================================= */
+.tag-filters-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 10px;
+    background: #1a1a1a;
+    border-bottom: 1px solid #333;
+}
+.filter-tag-btn {
+    background: #252525;
+    color: #aaa;
+    border: 1px solid #444;
+    padding: 4px 12px;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: 0.2s;
+}
+.filter-tag-btn:hover {
+    background: #333;
+    color: #fff;
+}
+.filter-tag-btn.active {
+    background: #600;
+    color: #fff;
+    border-color: #f00;
+}
+
+/* =========================================================================
+   テーブル・セルの横幅固定 ＆ ホバーコピーUIの調律
+   ========================================================================= */
+.table-wrapper {
+    margin: 5px;
+}
+
+#data-table {
+    width: 100%;
+    table-layout: fixed; /* これをブチ込むことでセルの横幅をパーセンテージで完全固定する */
+    border-collapse: collapse;
+    background: #151515;
+    margin: 2px;
+}
+
+#table-head {
+    height: 40px;
+}
+
+/* 各セルの基本ルール */
+.copyable-cell {
+    position: relative;
+    padding: 10px 12px;
+    border: 1px solid #333;
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis; /* 万が一溢れたら「...」にする論理防御 */
+}
+
+/* 効果やトリガーなどの長文セルは幅を広く取る */
+.long-text-cell {
+    text-align: left;
+}
+
+/* --- 【横幅の黄金比率プログラミング】 --- */
+/* アビリティ表示時の幅固定（合計100%） */
+#data-table th:nth-child(1),
+#data-table td:nth-child(1) {
+    width: 10%;
+} /* タイプ */
+#data-table th:nth-child(2),
+#data-table td:nth-child(2) {
+    width: 10%;
+} /* アビリティ名/狂気名 */
+#data-table th:nth-child(3),
+#data-table td:nth-child(3) {
+    width: 10%;
+} /* 指定特技/英字 */
+#data-table th:nth-child(4),
+#data-table td:nth-child(4) {
+    width: 15%;
+} /* 効果/トリガー（一番広く） */
+#data-table th:nth-child(5),
+#data-table td:nth-child(5) {
+    width: 20%;
+} /* 記載/取得条件など */
+#data-table th:nth-child(6),
+#data-table td:nth-child(6) {
+    width: 5%;
+} /* 新版アビリティの記載 */
+
+/* インラインコピーボタンのステルス化 */
+.copy-inline-btn {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgb(83, 83, 83); /* 狂気の赤 */
+    color: #fff;
+    border: 1px solid rgb(255, 255, 255);
+    padding: 3px 8px;
+    font-size: 0;
+    cursor: pointer;
+    border-radius: 3px;
+    opacity: 0; /* 普段は完全に透明化 */
+    transition:
+        opacity 0.2s ease-in-out,
+        background 0.2s;
+    box-shadow: 0 0 5px rgb(255, 255, 255);
+}
+
+/* マウスが乗った（ホバーした）セルの中のボタンだけを浮き上がらせる */
+.copyable-cell:hover .copy-inline-btn {
+    opacity: 1;
+}
+
+.copy-inline-btn:hover {
+    background: rgb(145, 145, 145);
+}
+
+/* コピー成功時の演出 */
+.copy-inline-btn.copied {
+    background: rgb(255, 255, 255);
+    border-color: rgb(255, 255, 255);
+    box-shadow: 0 0 5px rgb(255, 255, 255);
+}
+
+/* テキストがボタンと重ならないように右側に少し隙間を空ける */
+.cell-data {
+    display: block;
+    padding-right: 45px;
+    word-break: break-all; /* セル内での変な改行を防ぐ */
+}
+
+/* 効果セル（ホバーコピーボタンの基準点） */
+.desc-cell {
+    position: relative;
+    padding-right: 70px !important; /* ボタンが文字と被らんためのデバッグ */
+}
+.copy-inline-btn {
+    position: absolute;
+    right: 5px;
+    top: 30px;
+    transform: translateY(-50%);
+    background: #444;
+    color: #fff;
+    border: 1px solid #666;
+    padding: 20px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.desc-cell:hover .copy-inline-btn {
+    opacity: 1;
+    background: rgb(155, 155, 155);
+    border-color: rgb(228, 228, 228);
+}

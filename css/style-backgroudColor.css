@@ -1,0 +1,124 @@
+        :root {
+        /* 共通の色変数 */
+        --accent-blue: #617692;
+        --transition-speed: 0.5s;
+        --primary: #997ac2;
+        --primary-light: #b99ad9;
+        --primary-dark: #7a5fa3;
+        --primary-bg: #f3eef8;
+        --text-dark: #1f2937;
+        --text-light: #6b7280;
+        --bg-page: #f9fafb;
+        --bg-card: #ffffff;
+        }
+
+        /* モードごとに変数の値を定義 */
+        body.dark {
+            --bg-color: #2d2e34;
+            --text-color: #ffffff;
+        }
+        body.light {
+            --bg-color: #e0dfec;
+            --text-color: #373e59;
+        }
+
+        /* 実際に使うときは変数で指定 */
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color var(--transition-speed),color var(--transition-speed); /* 切り替えをスムーズにする */
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .mode-switch {
+            position: absolute;
+            top: 5%;
+            right: 10%;
+        }
+
+        .switch_label {
+            /*flexで横並びに。align-itemsで縦方向の中央揃えにする*/
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            width: 116px;
+        }
+
+        input[type="checkbox"] {
+            /*チェックボックスを左上端に固定してサイズを0にすることで非表示にできる*/
+            position: absolute;
+            width: 0;
+            height: 0;
+        }
+
+        .switch {
+            /*スイッチの位置。relativeにすると、switch＞circleのtop,leftはswitchからの位置になる。*/
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 116px;
+            height: 35px;
+        }
+        .Mode {
+            /*ボタン内の文字をスライドさせる*/
+            position: absolute;
+            left: 42px;
+            font: bold 20px "YUGOTHIC",sans-serif;
+            letter-spacing: 1px;
+            color: #000000;
+            z-index: 10;
+            transition: 0.5s;
+            }
+
+        input:checked ~ .Mode {
+            /* activeクラスがついた時（ライトモード時） */
+            /* 修正版：inputがチェックされた時の、兄弟要素である.Modeに対して適用(~)する */
+            left: 20px;
+            color: #ffffff;
+            font: bold 20px "YUGOTHIC",sans-serif;
+            letter-spacing: 1px;
+            z-index: 10;
+        }
+
+        .base {
+            /*土台。width,height=サイズ。border...角の丸*/
+            width: 116px;
+            border-radius: 21px;
+            height: 35px;
+            background-color:#ffffff;
+            box-shadow: 0 0 6px 1px   #00000070;
+        }
+
+        input:checked ~ .base {
+            /*チェックされているときの土台の色*/
+            background-color: #5c6e9c;
+            transition: 0.5s;
+            box-shadow: 0 0 6px 1px   #00000070
+        }
+
+        .circle {
+            /*スイッチの丸。width,height=サイズ。borderはサイズの半分の値。top,left＝位置。*/
+            position: absolute;
+            top: 5px;
+            left: 7px;
+            width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            background-color: #373e59;
+            transition: 0.5s;
+            z-index: 5;
+        }
+
+        input:checked ~ .circle {
+            /*translateX=右に丸何個(100%=指定px)分動かすか*/
+            transform: translateX(320%);
+            background-color: #ffffff;
+        }
+
+        .logo {
+            width: 400px;
+            font: bold 24px "Yugoshic",sans-serif;
+            margin: auto;
+        }

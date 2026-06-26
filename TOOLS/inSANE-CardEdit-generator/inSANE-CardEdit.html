@@ -1,0 +1,1085 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>SECTOR: C-C // CARD EDITOR</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+        <link rel="stylesheet" href="/css/inSANE-CardEdit.css"/>
+    </head>
+    <body
+        class="bg-gray-900 text-gray-100 h-screen max-h-screen min-h-screen flex flex-col font-sans overflow-hidden">
+        <div
+            id="app"
+            class="flex flex-col h-full max-h-full w-full overflow-hidden">
+            <header
+                class="bg-gray-800 border-b border-gray-700 h-16 min-h-[4rem] px-4 flex justify-between items-center shrink-0 z-20">
+                <h1 class="text-lg md:text-xl font-bold tracking-wider text-red-500">SECTOR: C-C // CARD EDITOR</h1>
+                <div class="grid grid-cols-2 gap-2 text-[11px]">
+                    <button @click="exportTemplates" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 font-medium py-1.5 px-2 rounded-md text-center transition-all">
+                        ファイルに書き出し
+                    </button>
+                    <label class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 font-medium py-1.5 px-2 rounded-md text-center cursor-pointer transition-all">
+                        ファイルから読み込み
+                        <input type="file" @change="importTemplates" accept=".json" class="hidden">
+                    </label>
+                </div>
+                <div class="hidden sm:block text-xs text-gray-400">
+                    解像度: 960 × 1440 (2:3)
+                </div>
+            </header>
+
+            <div
+                class="flex md:hidden bg-gray-800 border-b border-gray-700 h-12 min-h-[3rem] shrink-0 z-20">
+                <button
+                    @click="currentTab = 'form'"
+                    :class="currentTab === 'form' ? 'text-red-500 border-b-2 border-red-500 bg-gray-700/50' : 'text-gray-400'"
+                    class="flex-1 py-2 text-sm font-bold">
+                    ① 編集
+                </button>
+                <button
+                    @click="currentTab = 'preview'"
+                    :class="currentTab === 'preview' ? 'text-red-500 border-b-2 border-red-500 bg-gray-700/50' : 'text-gray-400'"
+                    class="flex-1 py-2 text-sm font-bold">
+                    ② プレビュー
+                </button>
+                <button
+                    @click="currentTab = 'tray'"
+                    :class="currentTab === 'tray' ? 'text-red-500 border-b-2 border-red-500 bg-gray-700/50' : 'text-gray-400'"
+                    class="flex-1 py-2 text-sm font-bold relative">
+                    ③ トレイ
+                    <span
+                        v-if="tray.length > 0"
+                        class="ml-1 bg-red-600 text-white text-[10px] px-1.5 py-0.5 rounded-full">{{ tray.length }}</span">
+                </button>
+            </div>
+
+            <div
+                class="flex flex-1 h-[calc(100%-4rem)] md:h-[calc(100%-4rem)] overflow-hidden relative min-h-0">
+                <aside
+                    :class="currentTab === 'form' ? 'flex' : 'hidden md:flex'"
+                    class="w-full md:w-1/3 bg-gray-800 border-r border-gray-700 flex-col h-full max-h-full z-10 md:relative absolute overflow-hidden">
+                    <div
+                        class="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 min-h-0">
+                        <div
+                            class="bg-gray-700/40 p-4 rounded-lg border border-gray-600 space-y-3">
+                            <h3
+                                class="text-sm font-bold text-red-400 flex items-center gap-2">
+                                <i data-lucide="search" class="w-4 h-4"></i> 1.
+                                テンプレート選択
+                            </h3>
+                            <div class="grid grid-cols-2 gap-2">
+                                <select
+                                    v-model="filter.version"
+                                    class="bg-gray-800 border border-gray-600 rounded px-2 py-1.5 text-xs focus:outline-none text-white">
+                                    </option>
+                                    <option value="new">新版</option>
+                                    <option value="old">旧版</option>
+                                </select>
+                                <select
+                                    v-model="filter.world"
+                                    class="bg-gray-800 border border-gray-600 rounded px-2 py-1.5 text-xs focus:outline-none text-white">
+                                    <option value="all">
+                                        ワールドセッティング
+                                    </option>
+                                    <option value="Classic">基本</option>
+                                    <option value="JSHorror">
+                                        本当は怖い現代日本
+                                    </option>
+                                    <option value="20s">狂騒の二〇年代</option>
+                                    <option value="Victoria">
+                                        暗黒のヴィクトリア
+                                    </option>
+                                    <option value="Loop">
+                                        繰り返される惨劇
+                                    </option>
+                                    <option value="custom">
+                                        オリジナル狂気
+                                    </option>
+                                </select>
+                            </div>
+                            <input
+                                v-model="filter.searchQuery"
+                                type="text"
+                                placeholder="狂気名またはキーワード"
+                                class="w-full bg-gray-800 border border-gray-600 rounded px-3 py-1.5 text-xs focus:outline-none text-white">
+                                <select
+                                v-model="selectedMadnessId"
+                                @change="applyTemplate"
+                                class="w-full bg-gray-800 border border-red-900 rounded px-3 py-2 text-sm focus:outline-none focus:border-red-500 font-medium text-white">
+                                <option
+                                    v-for="item in filteredMadnessList"
+                                    :key="item.madnessId"
+                                    :value="item.madnessId">
+                                    {{ item.titleJa }}
+                                </option>
+                                <option value="custom">
+                                    -- オリジナル狂気 --
+                                </option>
+                                <option
+                                    v-if="filter.world === 'custom'"
+                                    v-for="t in filteredUserTemplates"
+                                    :key="t.madnessId"
+                                    :value="t.madnessId">
+                                    💾 {{ t.cardData.titleBox.titleJa || t.templateName }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div
+                            class="bg-gray-700/40 p-4 rounded-lg border border-gray-600 space-y-4">
+                            <h3
+                                class="text-sm font-bold text-red-400 flex items-center gap-2">
+                                <i data-lucide="palette" class="w-4 h-4"></i> 2.
+                                カードをカスタム
+                            </h3>
+                            <div
+                                class="space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto pr-2 custom-scrollbar">
+                                <div
+                                    class="bg-gray-800/60 p-4 rounded-xl border border-gray-700 space-y-3">
+                                    <h3
+                                        class="font-bold text-sm text-gray-200 flex items-center gap-2">
+                                        <span
+                                            class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                        背景設定
+                                    </h3>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">背景カラー</label>
+                                            <input
+                                                type="color"
+                                                v-model="currentCard.bgColor"
+                                                class="w-full h-8 bg-transparent cursor-pointer"/>
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">背景画像を挿入</label>
+                                            <input
+                                                type="file"
+                                                @change="onFileChange($event, 'bgImage')"
+                                                accept="image/*"
+                                                class="w-full text-xs text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-gray-700 file:text-gray-200 hover:file:bg-gray-600"/>
+                                        </div>
+                                    </div>
+
+                                    <details
+                                        class="bg-gray-900/40 rounded-lg border border-gray-700/60 group text-xs overflow-hidden">
+                                        <summary
+                                            class="font-bold text-blue-400 p-3 flex items-center justify-between cursor-pointer hover:bg-gray-700/30 select-none list-none">
+                                            <span>[詳細設定 装飾]</span>
+                                            <i
+                                                data-lucide="chevron-down"
+                                                class="w-3 h-3 transition-transform group-open:rotate-180 text-gray-500"></i>
+                                        </summary>
+                                        <div
+                                            class="p-3 pt-0 space-y-3 border-t border-gray-800 bg-gray-900/20">
+                                            <div>
+                                                <label
+                                                    class="block text-[11px] text-gray-400 mb-1">パターン</label>
+                                                <select
+                                                    v-model="currentCard.bgPattern"
+                                                    class="w-full bg-gray-800 border border-gray-600 rounded h-8 px-2 text-white">
+                                                    <option value="pat-none">
+                                                        なし
+                                                    </option>
+                                                    <option value="pat-grid">
+                                                        グリッド
+                                                    </option>
+                                                    <option value="pat-dots">
+                                                        ドット
+                                                    </option>
+                                                    <option value="pat-stripe">
+                                                        ストライプ
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label
+                                                    class="block text-[11px] text-gray-400 mb-1">パターンの色</label>
+                                                <input
+                                                    type="color"
+                                                    v-model="currentCard.patternColor"
+                                                    class="w-full h-7 bg-transparent cursor-pointer"/>
+                                            </div>
+                                            <div
+                                                class="border-t border-gray-700/50 pt-2 space-y-2">
+                                                <div
+                                                    class="flex items-center justify-between">
+                                                    <span class="text-gray-300">フチどり（カード全体）</span>
+                                                    <input
+                                                        type="checkbox"
+                                                        v-model="currentCard.cardBox.showBorder"
+                                                        class="w-4 h-4 accent-blue-500"/>
+                                                </div>
+                                                <div
+                                                    v-if="currentCard.cardBox.showBorder"
+                                                    class="grid grid-cols-2 gap-2">
+                                                    <div>
+                                                        <label
+                                                            class="block text-[11px] text-gray-400 mb-1"
+                                                            >枠の太さ
+                                                            ({{currentCard.cardBox.borderWidth}}px)</label>
+                                                        <input
+                                                            type="range"
+                                                            min="1"
+                                                            max="32"
+                                                            v-model.number="currentCard.cardBox.borderWidth"
+                                                            class="w-full accent-blue-500"/>
+                                                    </div>
+                                                    <div>
+                                                        <label
+                                                            class="block text-[11px] text-gray-400 mb-1"
+                                                            >枠の色</label>
+                                                        <input
+                                                            type="color"
+                                                            v-model="currentCard.cardBox.borderColor"
+                                                            class="w-full h-7 bg-transparent cursor-pointer"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </details>
+                                </div>
+                                <div
+                                    class="bg-gray-800/60 p-4 rounded-xl border border-gray-700 space-y-3">
+                                    <h3
+                                        class="font-bold text-sm text-gray-200 flex items-center gap-2">
+                                        <span
+                                            class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                        挿絵設定
+                                    </h3>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">ベースカラー</label>
+                                            <input
+                                                type="color"
+                                                v-model="currentCard.illrBox.bgColor"
+                                                class="w-full h-8 bg-transparent cursor-pointer"/>
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">画像を挿入<br>
+                                                <span
+                                                    class="text-emerald-400 text-[10px] font-mono">(推奨: 920×400)</span></label>
+                                            <input
+                                                type="file"
+                                                @change="onFileChange($event, 'illrImage')"
+                                                accept="image/*"
+                                                class="w-full text-xs text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-gray-700 file:text-gray-200 hover:file:bg-gray-600"/>
+                                        </div>
+                                    </div>
+
+                                    <details
+                                        class="bg-gray-900/40 rounded-lg border border-gray-700/60 group text-xs overflow-hidden">
+                                        <summary
+                                            class="font-bold text-emerald-400 p-3 flex items-center justify-between cursor-pointer hover:bg-gray-700/30 select-none list-none">
+                                            <span>[詳細設定]</span>
+                                            <i
+                                                data-lucide="chevron-down"
+                                                class="w-3 h-3 transition-transform group-open:rotate-180 text-gray-500"></i>
+                                        </summary>
+                                        <div
+                                            class="p-3 pt-0 space-y-2 border-t border-gray-800 bg-gray-900/20">
+                                            <div
+                                                class="flex items-center justify-between">
+                                                <span class="text-gray-300">フチどり（挿絵枠）</span>
+                                                <input
+                                                    type="checkbox"
+                                                    v-model="currentCard.illrBox.showBorder"
+                                                    class="w-4 h-4 accent-emerald-500"/>
+                                            </div>
+                                            <div
+                                                v-if="currentCard.illrBox.showBorder"
+                                                class="grid grid-cols-2 gap-2">
+                                                <div>
+                                                    <label
+                                                        class="block text-[11px] text-gray-400 mb-1">枠の太さ
+                                                        ({{currentCard.illrBox.borderWidth}}px)</label>
+                                                    <input
+                                                        type="range"
+                                                        min="1"
+                                                        max="24"
+                                                        v-model.number="currentCard.illrBox.borderWidth"
+                                                        class="w-full accent-emerald-500"/>
+                                                </div>
+                                                <div>
+                                                    <label
+                                                        class="block text-[11px] text-gray-400 mb-1">枠の色</label>
+                                                    <input
+                                                        type="color"
+                                                        v-model="currentCard.illrBox.borderColor"
+                                                        class="w-full h-7 bg-transparent cursor-pointer"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </details>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-gray-800/60 p-4 rounded-xl border border-gray-700 space-y-3">
+                            <h3
+                                class="font-bold text-sm text-gray-200 flex items-center gap-2">
+                                <span
+                                    class="w-2 h-2 rounded-full bg-purple-500"></span>
+                                タイトル設定
+                            </h3>
+                            <div class="space-y-2">
+                                <div>
+                                    <label
+                                        class="block text-[11px] text-gray-400 mb-1">入力欄①</label>
+                                    <input
+                                        type="text"
+                                        placeholder="タイトル入力欄①"
+                                        v-model="currentCard.titleBox.titleEn"
+                                        class="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white text-xs focus:outline-none focus:border-purple-500"/>
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-[11px] text-gray-400 mb-1">入力欄②</label>
+                                    <input
+                                        type="text"
+                                        placeholder="タイトル入力欄②"
+                                        v-model="currentCard.titleBox.titleJa"
+                                        class="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white text-xs focus:outline-none focus:border-purple-500"/>
+                                </div>
+                            </div>
+
+                            <details
+                                class="bg-gray-900/40 rounded-lg border border-gray-700/60 group text-xs overflow-hidden">
+                                <summary
+                                    class="font-bold text-purple-400 p-3 flex items-center justify-between cursor-pointer hover:bg-gray-700/30 select-none list-none">
+                                    <span>[詳細設定 テキスト]</span>
+                                    <i
+                                        data-lucide="chevron-down"
+                                        class="w-3 h-3 transition-transform group-open:rotate-180 text-gray-500"></i>
+                                </summary>
+                                <div
+                                    class="p-3 pt-0 space-y-3 border-t border-gray-800 bg-gray-900/20">
+                                    <div>
+                                        <label
+                                            class="block text-[11px] text-gray-400 mb-1">フォント</label>
+                                        <select
+                                            v-model="currentCard.titleBox.fontStyle"
+                                            class="w-full bg-gray-800 border border-gray-600 rounded h-8 px-2 text-white">
+                                            <option value="font-gothic">
+                                                ゴシック体
+                                            </option>
+                                            <option value="font-mincho">
+                                                明朝体
+                                            </option>
+                                            <option value="font-horror">
+                                                ホラー体
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">フォントサイズ①<br>({{currentCard.titleBox.fontSizeJa}}px)</label>
+                                            <input
+                                                type="range"
+                                                min="24"
+                                                max="120"
+                                                v-model.number="currentCard.titleBox.fontSizeJa"
+                                                class="w-full accent-purple-500"/>
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">フォントサイズ②<br>({{currentCard.titleBox.fontSizeEn}}px)</label>
+                                            <input
+                                                type="range"
+                                                min="12"
+                                                max="64"
+                                                v-model.number="currentCard.titleBox.fontSizeEn"
+                                                class="w-full accent-purple-500"/>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-[11px] text-gray-400 mb-1">テキストカラー</label>
+                                        <input
+                                            type="color"
+                                            v-model="currentCard.titleBox.textColor"
+                                            class="w-full h-7 bg-transparent cursor-pointer"/>
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+
+                        <div
+                            class="bg-gray-800/60 p-4 rounded-xl border border-gray-700 space-y-3">
+                            <h3
+                                class="font-bold text-sm text-gray-200 flex items-center gap-2">
+                                <span
+                                    class="w-2 h-2 rounded-full bg-red-500"></span>
+                                トリガー設定
+                            </h3>
+                            <div>
+                                <label
+                                    class="block text-[11px] text-gray-400 mb-1">入力欄</label>
+                                <textarea
+                                    v-model="currentCard.triggerBox.text"
+                                    placeholder="トリガーを入力してください。"
+                                    class="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white text-xs focus:outline-none focus:border-red-500"
+                                    rows="2"></textarea>
+                            </div>
+
+                            <details
+                                class="bg-gray-900/40 rounded-lg border border-gray-700/60 group text-xs overflow-hidden">
+                                <summary
+                                    class="font-bold text-red-400 p-3 flex items-center justify-between cursor-pointer hover:bg-gray-700/30 select-none list-none">
+                                    <span>[詳細設定 テキスト]</span>
+                                    <i
+                                        data-lucide="chevron-down"
+                                        class="w-3 h-3 transition-transform group-open:rotate-180 text-gray-500"></i>
+                                </summary>
+                                <div
+                                    class="p-3 pt-0 space-y-3 border-t border-gray-800 bg-gray-900/20">
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">フォント</label>
+                                            <select
+                                                v-model="currentCard.triggerBox.fontStyle"
+                                                class="w-full bg-gray-800 border border-gray-600 rounded h-8 px-2 text-white">
+                                                <option value="font-gothic">
+                                                    ゴシック体
+                                                </option>
+                                                <option value="font-mincho">
+                                                    明朝体
+                                                </option>
+                                                <option value="font-horror">
+                                                    ホラー体
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="flex flex-col gap-1">
+                                            <label class="text-xs text-gray-400 font-medium">文字揃え</label>
+                                            <select 
+                                                v-model="currentCard.triggerBox.alignX" 
+                                                class="bg-gray-800 border border-gray-600 rounded px-2 py-1.5 text-xs focus:outline-none text-white">
+                                                <option value="text-left">左揃え</option>
+                                                <option value="text-center">中央揃え</option>
+                                                <option value="text-right">右揃え</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">フォントサイズ
+                                                ({{currentCard.triggerBox.fontSize}}px)</label>
+                                            <input
+                                                type="range"
+                                                min="16"
+                                                max="60"
+                                                v-model.number="currentCard.triggerBox.fontSize"
+                                                class="w-full accent-red-500 cursor-pointer"/>
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">字間
+                                                ({{currentCard.triggerBox.letterSpacing || 0}}px)</label>
+                                            <input
+                                                type="range"
+                                                min="-2"
+                                                max="20"
+                                                step="0.5"
+                                                v-model.number="currentCard.triggerBox.letterSpacing"
+                                                class="w-full accent-red-500 cursor-pointer"/>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-[11px] text-gray-400 mb-1">テキストカラー</label>
+                                        <input
+                                            type="color"
+                                            v-model="currentCard.triggerBox.textColor"
+                                            class="w-full h-7 bg-transparent cursor-pointer"/>
+                                    </div>
+                                </div>
+                            </details>
+
+                            <details
+                                class="bg-gray-900/40 rounded-lg border border-gray-700/60 group text-xs overflow-hidden">
+                                <summary
+                                    class="font-bold text-orange-400 p-3 flex items-center justify-between cursor-pointer hover:bg-gray-700/30 select-none list-none">
+                                    <span>[詳細設定 背面]</span>
+                                    <i
+                                        data-lucide="chevron-down"
+                                        class="w-3 h-3 transition-transform group-open:rotate-180 text-gray-500"></i>
+                                </summary>
+                                <div
+                                    class="p-3 pt-0 space-y-3 border-t border-gray-800 bg-gray-900/20">
+                                    <div
+                                        class="flex items-center justify-between">
+                                        <span class="text-gray-300">枠線の表示</span>
+                                        <input
+                                            type="checkbox"
+                                            v-model="currentCard.triggerBox.showBorder"
+                                            class="w-4 h-4 accent-orange-500"/>
+                                    </div>
+                                    <div
+                                        v-if="currentCard.triggerBox.showBorder"
+                                        class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">枠の太さ
+                                                ({{currentCard.triggerBox.borderWidth}}px)</label>
+                                            <input
+                                                type="range"
+                                                min="1"
+                                                max="16"
+                                                v-model.number="currentCard.triggerBox.borderWidth"
+                                                class="w-full accent-orange-500"/>
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">枠線の色</label>
+                                            <input
+                                                type="color"
+                                                v-model="currentCard.triggerBox.borderColor"
+                                                class="w-full h-7 bg-transparent cursor-pointer"/>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">背景色</label>
+                                            <input
+                                                type="color"
+                                                v-model="currentCard.triggerBox.bgColor"
+                                                class="w-full h-7 bg-transparent cursor-pointer"/>
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">不透明度
+                                                ({{currentCard.triggerBox.bgOpacity}}%)</label>
+                                            <input
+                                                type="range"
+                                                min="0"
+                                                max="100"
+                                                v-model.number="currentCard.triggerBox.bgOpacity"
+                                                class="w-full accent-orange-500"/>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-[11px] text-gray-400 mb-1">画像を挿入<br>
+                                            <span
+                                                class="text-orange-400 text-[10px] font-mono">(推奨: 920×120)</span></label>
+                                        <input
+                                            type="file"
+                                            @change="onTriggerDecorChange"
+                                            accept="image/*"
+                                            class="w-full text-xs text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-gray-700 file:text-gray-200 hover:file:bg-gray-600"/>
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+
+                        <div
+                            class="bg-gray-800/60 p-4 rounded-xl border border-gray-700 space-y-3">
+                            <h3
+                                class="font-bold text-sm text-gray-200 flex items-center gap-2">
+                                <span
+                                    class="w-2 h-2 rounded-full bg-amber-500"></span>
+                                解説設定
+                            </h3>
+                            <div>
+                                <label
+                                    class="block text-[11px] text-gray-400 mb-1">入力欄</label>
+                                <textarea
+                                    v-model="currentCard.descBox.text"
+                                    placeholder="解説をを入力してください。"
+                                    class="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white text-xs focus:outline-none focus:border-amber-500"
+                                    rows="3"></textarea>
+                            </div>
+
+                            <details
+                                class="bg-gray-900/40 rounded-lg border border-gray-700/60 group text-xs overflow-hidden">
+                                <summary
+                                    class="font-bold text-amber-400 p-3 flex items-center justify-between cursor-pointer hover:bg-gray-700/30 select-none list-none">
+                                    <span>[詳細設定 テキスト]</span>
+                                    <i
+                                        data-lucide="chevron-down"
+                                        class="w-3 h-3 transition-transform group-open:rotate-180 text-gray-500"></i>
+                                </summary>
+                                <div
+                                    class="p-3 pt-0 space-y-3 border-t border-gray-800 bg-gray-900/20">
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">フォント</label>
+                                            <select
+                                                v-model="currentCard.descBox.fontStyle"
+                                                class="w-full bg-gray-800 border border-gray-600 rounded h-8 px-2 text-white">
+                                                <option value="font-gothic">
+                                                    ゴシック体
+                                                </option>
+                                                <option value="font-mincho">
+                                                    明朝体
+                                                </option>
+                                                <option value="font-horror">
+                                                    ホラー体
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">配置</label>
+                                            <select
+                                                v-model="currentCard.descBox.alignY"
+                                                class="w-full bg-gray-800 border border-gray-600 rounded h-8 px-2 text-white">
+                                                <option value="justify-start">
+                                                    上詰め
+                                                </option>
+                                                <option value="justify-center">
+                                                    中央揃え
+                                                </option>
+                                                <option value="justify-end">
+                                                    下詰め
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <label class="text-xs text-gray-400 font-medium">文字揃え</label>
+                                        <select 
+                                            v-model="currentCard.descBox.alignX" 
+                                            class="bg-gray-800 border border-gray-600 rounded px-2 py-1.5 text-xs focus:outline-none text-white">
+                                            <option value="text-left">左揃え</option>
+                                            <option value="text-center">中央揃え</option>
+                                            <option value="text-right">右揃え</option>
+                                        </select>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label class="block text-[11px] text-gray-400 mb-1">
+                                                フォントサイズ ({{currentCard.descBox.fontSize}}px)
+                                            </label>
+                                            <input
+                                                type="range"
+                                                min="16"
+                                                max="40"
+                                                v-model.number="currentCard.descBox.fontSize"
+                                                class="w-full accent-amber-500 cursor-pointer"/>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] text-gray-400 mb-1">
+                                                字間 ({{currentCard.descBox.letterSpacing || 0}}px)
+                                            </label>
+                                            <input
+                                                type="range"
+                                                min="-2"
+                                                max="20"
+                                                step="0.5"
+                                                v-model.number="currentCard.descBox.letterSpacing"
+                                                class="w-full accent-amber-500 cursor-pointer"/>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-[11px] text-gray-400 mb-1">テキストカラー</label>
+                                        <input
+                                            type="color"
+                                            v-model="currentCard.descBox.textColor"
+                                            class="w-full h-7 bg-transparent cursor-pointer"/>
+                                    </div>
+                                </div>
+                            </details>
+
+                            <details
+                                class="bg-gray-900/40 rounded-lg border border-gray-700/60 group text-xs overflow-hidden">
+                                <summary
+                                    class="font-bold text-yellow-400 p-3 flex items-center justify-between cursor-pointer hover:bg-gray-700/30 select-none list-none">
+                                    <span>[詳細設定 背面]</span>
+                                    <i
+                                        data-lucide="chevron-down"
+                                        class="w-3 h-3 transition-transform group-open:rotate-180 text-gray-500"></i>
+                                </summary>
+                                <div
+                                    class="p-3 pt-0 space-y-3 border-t border-gray-800 bg-gray-900/20">
+                                    <div
+                                        class="flex items-center justify-between">
+                                        <span class="text-gray-300">枠線の表示</span>
+                                        <input
+                                            type="checkbox"
+                                            v-model="currentCard.descBox.showBorder"
+                                            class="w-4 h-4 accent-yellow-500"/>
+                                    </div>
+                                    <div
+                                        v-if="currentCard.descBox.showBorder"
+                                        class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">枠の太さ
+                                                ({{currentCard.descBox.borderWidth}}px)</label>
+                                            <input
+                                                type="range"
+                                                min="1"
+                                                max="16"
+                                                v-model.number="currentCard.descBox.borderWidth"
+                                                class="w-full accent-yellow-500"/>
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">枠線の色</label>
+                                            <input
+                                                type="color"
+                                                v-model="currentCard.descBox.borderColor"
+                                                class="w-full h-7 bg-transparent cursor-pointer"/>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">背景色</label>
+                                            <input
+                                                type="color"
+                                                v-model="currentCard.descBox.bgColor"
+                                                class="w-full h-7 bg-transparent cursor-pointer"/>
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-[11px] text-gray-400 mb-1">不透明度
+                                                ({{currentCard.descBox.bgOpacity}}%)</label>
+                                            <input
+                                                type="range"
+                                                min="0"
+                                                max="100"
+                                                v-model.number="currentCard.descBox.bgOpacity"
+                                                class="w-full accent-yellow-500"/>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-[11px] text-gray-400 mb-1">画像を挿入<br>
+                                            <span
+                                                class="text-yellow-400 text-[10px] font-mono">(推奨: 920×480)</span></label>
+                                        <input
+                                            type="file"
+                                            @change="onDescDecorChange"
+                                            accept="image/*"
+                                            class="w-full text-xs text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-gray-700 file:text-gray-200 hover:file:bg-gray-600"/>
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+
+                        <div
+                            class="bg-gray-700/40 p-4 rounded-lg border border-gray-600 space-y-2 text-xs">
+                            <div class="flex items-center justify-between">
+                                <label
+                                    class="font-bold text-red-400 flex items-center gap-2"><i
+                                        data-lucide="shield-alert"
+                                        class="w-4 h-4"></i>
+                                    4. スタンプ表示</label>
+                                <input
+                                    type="checkbox"
+                                    v-model="currentCard.stamp.show"
+                                    class="w-4 h-4 accent-red-500"/>
+                            </div>
+                            <div
+                                v-if="currentCard.stamp.show"
+                                class="pt-1 space-y-2">
+                                <div>
+                                    <label
+                                        class="block text-[11px] text-gray-400 mb-1">スタンプ画像(PNG)を挿入</label>
+                                    <input
+                                        type="file"
+                                        @change="onFileChange($event, 'stamp.image')"
+                                        accept="image/*"
+                                        class="w-full text-xs text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-gray-700 file:text-gray-200 hover:file:bg-gray-600"/>
+                                </div>
+                                <div>
+                                    <div
+                                        class="flex justify-between text-[11px] text-gray-400">
+                                        <span>スタンプの傾き</span><span>{{currentCard.stamp.rotate}}°</span>
+                                    </div>
+                                    <input
+                                        type="range"
+                                        min="-180"
+                                        max="180"
+                                        v-model.number="currentCard.stamp.rotate"
+                                        class="w-full accent-red-500"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-4 pb-2">
+                            <button
+                                @click="pushToTray"
+                                class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded shadow-lg transition-colors text-sm flex items-center justify-center gap-2">
+                                <i
+                                    data-lucide="plus-circle"
+                                    class="w-4 h-4"></i>
+                                編集内容をトレイに追加
+                            </button>
+                        </div>
+                        <div class="flex gap-2 text-xs">
+                            <button @click="saveAsTemplate" class="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-2 px-3 rounded-lg shadow transition-all">
+                                オリジナル狂気に追加
+                            </button>
+                            <button v-if="selectedMadnessId && selectedMadnessId.startsWith('user-')" @click="deleteTemplate(selectedMadnessId)" class="bg-red-900/60 hover:bg-red-800 border border-red-700 text-red-200 font-bold py-2 px-3 rounded-lg transition-all">
+                                削除
+                            </button>
+                        </div>
+                    </div>
+                </aside>
+
+                <main
+                    :class="currentTab === 'preview' ? 'flex' : 'hidden md:flex'"
+                    class="flex-1 bg-gray-950 flex-col items-center justify-center p-4 h-full relative overflow-hidden">
+                    <div class="responsive-card-wrapper">
+                        <div
+                            id="card-capture-target"
+                            class="real-card-base overflow-hidden flex flex-col justify-between p-12 transition-transform relative select-none"
+                            :class="[currentCard.bgPattern, currentCard.fontStyle]"
+                            :style="{
+                                backgroundColor: currentCard.bgColor,
+                                color: currentCard.textColor,
+                                '--pat-color': currentCard.patternColor,
+                                borderRadius: '48px',
+                                boxShadow: currentCard.cardBox.showBorder ? `inset 0 0 0 ${currentCard.cardBox.borderWidth}px ${currentCard.cardBox.borderColor}` : 'none'}">
+                            <div
+                                v-if="currentCard.bgImage"
+                                class="absolute inset-0 z-0 pointer-events-none">
+                                <img
+                                    :src="currentCard.bgImage"
+                                    class="w-full h-full object-cover"/>
+                            </div>
+
+                            <div class="h-16 w-full shrink-0 z-10"></div>
+
+                            <div
+                                class="w-full shrink-0 px-8 z-10 relative flex flex-col justify-end"
+                                style="height: 150px; padding-bottom: 14px"
+                                :class="[currentCard.titleBox.fontStyle]">
+                                <div
+                                    class="tracking-widest font-sans uppercase opacity-80 text-center"
+                                    :style="{ fontSize: currentCard.titleBox.fontSizeEn + 'px', color: currentCard.titleBox.textColor, marginBottom: '4px' }">
+                                    {{ currentCard.titleBox.titleEn || 'madness name' }}
+                                </div>
+
+                                <div
+                                    class="font-black tracking-wide text-center"
+                                    :style="{ fontSize: currentCard.titleBox.fontSizeJa + 'px', color: currentCard.titleBox.textColor }">
+                                    {{ currentCard.titleBox.titleJa || '狂気名'
+                                    }}
+                                </div>
+
+                                <div
+                                    class="absolute left-8 right-8"
+                                    style="height: 8px; border-radius: 4px"
+                                    :style="{ backgroundColor: currentCard.titleBox.textColor }"></div>
+                            </div>
+
+                            <div
+                                class="mx-4 shrink-0 text-black relative flex flex-col items-center justify-start overflow-hidden"
+                                style="
+                                    height: 160px;
+                                    border-radius: 12px;
+                                    padding-top: 16px;
+                                    padding-bottom: 16px;"
+                                :style="{
+                                    backgroundColor: hexToRgba(currentCard.triggerBox.bgColor, currentCard.triggerBox.bgOpacity),
+                                    boxShadow: currentCard.triggerBox.showBorder ? `inset 0 0 0 ${currentCard.triggerBox.borderWidth}px ${currentCard.triggerBox.borderColor}` : 'none',
+                                    paddingLeft: '40px',
+                                    paddingRight: '40px'}">
+
+                                <div
+                                    v-if="currentCard.triggerBox.decorImage"
+                                    class="absolute inset-0 flex items-center justify-center pointer-events-none z-0 p-2">
+                                    <img
+                                        :src="currentCard.triggerBox.decorImage"
+                                        :style="{ width: currentCard.triggerBox.decorWidth + '%' }"
+                                        class="h-full object-contain mx-auto"/>
+                                </div>
+
+                                <div
+                                    class="w-full relative z-10 flex flex-col items-center justify-start"
+                                    :class="[currentCard.triggerBox.fontStyle]">
+                                    
+                                    <span
+                                        class="font-black text-2xl block mb-1 shrink-0" style="font-size: 28px;"
+                                        :style="{ color: currentCard.triggerBox.textColor}">トリガー</span>
+
+                                    <div
+                                        class="font-bold w-full"
+                                        :class="[currentCard.triggerBox.alignX]"
+                                        :style="{ 
+                                            fontSize: currentCard.triggerBox.fontSize + 'px', 
+                                            color: currentCard.triggerBox.textColor,
+                                            letterSpacing: currentCard.triggerBox.letterSpacing + 'px',
+                                            lineHeight: '1.2'}">
+                                        {{ currentCard.triggerBox.text || 'トリガー条件。' }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="mx-4 relative overflow-hidden shrink-0 z-10"
+                                style="height: 400px; border-radius: 12px"
+                                :style="{
+                    backgroundColor: currentCard.illrBox.bgColor,
+                    boxShadow: currentCard.illrBox.showBorder ? `inset 0 0 0 ${currentCard.illrBox.borderWidth}px ${currentCard.illrBox.borderColor}` : 'none'}">
+                                <img
+                                    v-if="currentCard.illrImage"
+                                    :src="currentCard.illrImage"
+                                    class="w-full h-full object-cover"/>
+                                <div
+                                    v-else
+                                    class="absolute inset-0 flex items-center justify-center text-lg font-mono opacity-40"></div>
+                            </div>
+
+                            <div
+                                v-if="currentCard.stamp.show && currentCard.stamp.image"
+                                class="absolute z-30 pointer-events-none"
+                                style="top: 770px; right: 64px"
+                                :style="{ transform: `rotate(${currentCard.stamp.rotate}deg)` }">
+                                <img
+                                    :src="currentCard.stamp.image"
+                                    class="w-[280px] h-[280px] object-contain drop-shadow-2xl"/>
+                            </div>
+                            <div
+                                class="mx-4 mt-2 mb-2 shrink-0 text-black relative flex flex-col"
+                                style="
+                                    height: 480px;
+                                    border-radius: 12px;
+                                    padding-top: 40px;
+                                    padding-bottom: 40px;"
+                                :class="[currentCard.descBox.alignY]"
+                                :style="{
+                                    backgroundColor: hexToRgba(currentCard.descBox.bgColor, currentCard.descBox.bgOpacity),
+                                    boxShadow: currentCard.descBox.showBorder ? `inset 0 0 0 ${currentCard.descBox.borderWidth}px ${currentCard.descBox.borderColor}` : 'none',
+                                    paddingLeft: '40px',
+                                    paddingRight: '40px'}">
+                                <div
+                                    v-if="currentCard.descBox.decorImage"
+                                    class="absolute inset-0 flex items-center justify-center pointer-events-none z-0 p-4">
+                                    <img
+                                        :src="currentCard.descBox.decorImage"
+                                        :style="{ width: currentCard.descBox.decorWidth + '%' }"
+                                        class="h-full object-contain mx-auto"/>
+                                </div>
+                                <div
+                                    class="w-full overflow-hidden relative z-10 leading-loose whitespace-pre-wrap font-medium"
+                                    :class="[currentCard.descBox.fontStyle, currentCard.descBox.alignX]"
+                                    :style="{ fontSize: currentCard.descBox.fontSize + 'px', color: currentCard.descBox.textColor,letterSpacing: currentCard.descBox.letterSpacing + 'px'}">
+                                    {{ currentCard.descBox.text || '解説テキスト。' }}
+                                </div>
+                            </div>
+                            <div class="h-14 w-full shrink-0 z-10"></div>
+                        </div>
+                    </div>
+                </main>
+
+                <div
+                    :class="currentTab === 'tray' ? 'flex md:hidden' : 'hidden'"
+                    class="w-full bg-gray-900 p-4 flex-col h-full absolute z-20 overflow-y-auto space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-sm font-bold text-gray-300">
+                            トレイ内カード一覧 ({{ tray.length }}枚)
+                        </h3>
+                        <button
+                            @click="downloadZip"
+                            :disabled="tray.length === 0"
+                            class="bg-green-600 text-white px-3 py-1.5 rounded text-xs font-bold disabled:bg-gray-600">
+                            一括ZIP保存
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div
+                            v-for="(card, index) in tray"
+                            :key="card.id"
+                            @click="loadFromTrayMobile(index)"
+                            class="bg-gray-800 border p-2 rounded relative flex flex-col justify-between aspect-[2/3] text-center"
+                            :class="currentTrayIndex === index ? 'border-red-500' : 'border-gray-700'">
+                            <div class="text-[9px] text-gray-500 truncate">
+                                {{ card.madnessId }}
+                            </div>
+                            <div
+                                class="text-xs font-bold truncate text-gray-200">
+                                {{ card.titleJa }}
+                            </div>
+                            <button
+                                @click.stop="removeFromTray(index)"
+                                class="absolute top-1 right-1 bg-red-600/80 p-0.5 rounded">
+                                <i data-lucide="x" class="w-3 h-3"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer
+                class="hidden md:flex bg-gray-800 border-t border-gray-700 p-4 h-40 shrink-0 flex-col gap-2 z-20">
+                <div class="flex justify-between items-center">
+                    <div
+                        class="text-xs font-bold text-gray-300 flex items-center gap-2">
+                        <i
+                            data-lucide="layers"
+                            class="w-4 h-4 text-red-500"></i>
+                        トレイ内のカード一覧 ({{ tray.length }} 枚)
+                    </div>
+                    <div class="flex gap-2">
+                        <button
+                            @click="clearTray"
+                            class="bg-gray-700 hover:bg-gray-600 text-gray-300 px-3 py-1 rounded text-xs">
+                            トレイを空にする
+                        </button>
+                        <button
+                            @click="downloadZip"
+                            :disabled="tray.length === 0"
+                            class="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white font-bold px-4 py-1 rounded text-xs flex items-center gap-1">
+                            <i
+                                data-lucide="download-cloud"
+                                class="w-3.5 h-3.5"></i>
+                            一括ZIP保存 (.png)
+                        </button>
+                    </div>
+                </div>
+                <div
+                    class="flex-1 flex gap-4 overflow-x-auto pb-2 items-center px-2">
+                    <div
+                        v-if="tray.length === 0"
+                        class="text-xs text-gray-500 mx-auto font-mono">
+                        カードがありません。左下のボタンからトレイに追加してください。
+                    </div>
+                    <div
+                        v-for="(card, index) in tray"
+                        :key="card.id"
+                        @click="loadFromTray(index)"
+                        class="w-16 h-24 bg-gray-700 border-2 rounded p-1 flex flex-col justify-between cursor-pointer hover:scale-105 transition-transform shrink-0 relative group"
+                        :class="currentTrayIndex === index ? 'border-red-500 shadow-lg' : 'border-gray-500'">
+                        <div
+                            class="text-[8px] text-gray-400 font-mono truncate">
+                            {{ card.madnessId }}
+                        </div>
+                        <div
+                            class="text-[9px] font-bold text-center text-white truncate px-0.5">
+                            {{ card.titleJa }}
+                        </div>
+                        <button
+                            @click.stop="removeFromTray(index)"
+                            class="absolute top-0 right-0 bg-red-600 text-white rounded-bl p-0.5 opacity-0 group-hover:opacity-100">
+                            <i data-lucide="x" class="w-2.5 h-2.5"></i>
+                        </button>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        <script src="/js/data-madness.js"></script>
+        <script src="/js/app.js"></script>
+        <script>
+            lucide.createIcons();
+        </script>
+    </body>
+</html>

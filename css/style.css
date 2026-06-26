@@ -1,0 +1,18 @@
+a {
+            font: bold 24px/2 "YUGOTHIC",sans-serif;
+            text-decoration-line: none;
+            color: var(--text-color);
+        }
+
+        a:hover {
+            color: #3b4eb9;
+        }
+
+        nav {
+            width: 250px;
+            margin: 5% auto;
+        }
+
+        li {
+            list-style: none;
+        }

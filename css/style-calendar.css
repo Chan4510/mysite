@@ -1,0 +1,316 @@
+@media (min-width: 1200px) {
+
+        .main-content {
+            text-align: center;
+        }
+
+        .editor-container {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            margin: 0 auto;
+            max-width: 80%;
+        }
+
+        .controls {
+            width: 500px;
+            height: auto;
+            box-sizing: border-box;
+        }
+
+        section {
+            margin: 20px 0;
+        }
+
+        .editor-main {
+            flex-grow: 1;        /* 残りの幅を自動で埋める */
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+    }
+
+        @media (min-width: 768px) {
+        .main-content {
+            text-align: center;
+            margin: 30px 20px;
+        }
+
+        .editor-container {
+            height: 100%;
+            margin: 0 auto;
+            max-width: 80%;
+        }
+
+        .controls {
+            width: 500px;
+            height: auto;
+            box-sizing: border-box;
+        }
+
+        section {
+            margin: 20px 0;
+        }
+
+        .editor-main {
+                    flex-grow: 1;        /* 残りの幅を自動で埋める */
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: relative;
+                    overflow: hidden;
+                }
+        }
+
+        .year-input {
+            padding: 10px 10px 10px 30px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin: 20px 40px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .month-input {
+            padding: 10px 10px 10px 30px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin: 20px 40px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .font-input {
+            padding: 10px 80px 10px 30px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin: 20px 40px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .font-custom {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin: 10px 40px;
+            font-size: 20px;
+        }
+
+        .device-button {
+            background-color: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 10px auto;
+            width: 250px;
+            height: 40px;
+        }
+
+        .device-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .uploadArea {
+            display: block;
+            border: 2px dashed #dad5db;
+            margin: 20px auto;
+            padding: 30px 40px;
+            border-radius: 15px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .upload-input {
+            display: none;
+            position:absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .uploadArea:hover {
+            border-color: var(--primary);
+            background: rgba(153, 122, 194, 0.05);
+        }
+
+        #wallpaper-canvas {
+        background-color: #1a1a1a; /* デフォルト背景 */
+        background-size: cover;
+        position: relative;
+        overflow: hidden;
+        margin: 0 auto;
+        }
+
+        #calendar-area {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            padding: 40px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* どんな背景でも文字を読ませる執念 */
+        }
+
+        .colors-container {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-direction: row;
+            margin: 10px 40px;
+        }
+
+        .colors-button {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border: none;
+            margin: 10px 5px;
+            cursor: pointer;
+        }
+
+        .moon-container {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 5px 10px 20px 30px;
+            margin: 0 40px;
+        }
+
+        .moon-custom {
+            background-color: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 10px 80px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .moon-custom:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .moon-custom:checked {
+            background-color: #1a1a1a;
+        }
+
+        .pos-button {
+            background-color: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 10px auto;
+            width: 250px;
+            height: 40px;
+        }
+
+        .pos-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* 画像に合わせ、日曜は赤、土曜は青 */
+        .sun { color: #cc3333; }
+        .sat { color: #3366cc; }
+
+        /* 前後の月の日付を薄くする */
+        .other-month { opacity: 0.4; }
+
+        /* カレンダー全体を包むコンテナ */
+        /* 修正版：カレンダー全体を包むコンテナ */
+        #calendar-area {
+            z-index: 10; /* 背景より前に出す */
+            position: absolute;
+            width: 100%;
+            /* top: 50%; transform: translateY(-50%); これで垂直中央に固定しろ */
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: center;
+            padding: 0; /* paddingで余計な余白を作らん */
+            box-sizing: border-box;
+            background: transparent !important; /* 絶対に透明 */
+            /* 背景との境界を自然にするための影は最小限に */
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        /* 月名（Juneなど）のスタイル */
+        #month-title {
+            font-size: 2em; /* フォントサイズ可変の基準 */
+            margin-bottom: 30px;
+            letter-spacing: 0.1em;
+            text-transform: capitalize; /* 念のため先頭大文字に */
+        }
+
+        /* テーブルの構造デバッグ */
+        #cal-table {
+            width: 100%;
+            max-width: 800px; /* あまり広がりすぎると読みづらい */
+            margin: 0 auto;
+            border-collapse: separate; /* border-spacingを使うために変更 */
+            border-spacing: 0 15px;    /* 行間の余白を空ける */
+        }
+
+        #cal-table th {
+            font-weight: normal;
+            padding-bottom: 20px;
+            font-size: 1.2em;
+            color: inherit;
+        }
+
+        #cal-table td {
+            padding: 10px 5px;
+            line-height: 1.2;
+            vertical-align: middle; /* 日付と月を中央に寄せる */
+        }
+
+        /* 日付の数字 */
+        .date-num {
+            display: block;
+            font-size: 1.4em;
+            margin-bottom: 5px;
+        }
+
+        /* 月齢画像（お前が持ってるやつ） */
+        .moon-img {
+            display: block;
+            margin: 0 auto;
+            width: 32px; /* スライダー連動の初期値 */
+            height: auto;
+            /* 背景が明るくても見えるように、少しドロップシャドウを足す */
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
+        }
+
+        /* 画面上の見た目を制御する枠 */
+        #preview-viewport {
+            width: 80%;
+            height: 80vh; /* 画面の高さの8割 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #586275;
+            border-radius: 15px;
+            margin: 20px 20px;
+            overflow: hidden; /* はみ出た分を隠す */
+            border: none;
+            overflow: visible;
+        }
+
+        /* 実際の壁紙サイズ（JSで書き換える） */
+            #wallpaper-canvas {
+                background-color: #bbbbbb;
+                background-size: cover;
+                background-position: center;
+                position: relative;
+                /* 初期値（iPhone13/14 Pro想定とか） */
+                width: 1320px;
+                height: 2868px;
+                /* ★重要：デカすぎるので、見た目だけ縮小する */
+                transform: scale(0.2);
+                transform-origin: center center;
+                flex-shrink: 0;
+                outline: 1px solid #ffffff;
+            }

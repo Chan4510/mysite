@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/style-backgroudColor.css">
+    <title>SECTOR：Tools</title>
+    <style>
+        table {
+            background-color: #ffffff;
+            font: 16px "YUGOTHIC",sans-serif;
+            color: #373e59;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .note {
+            overflow-wrap: anywhere;
+        }
+    </style>
+        <style>
+        /* 検索フィルタ用にhidden属性がついている要素を消す */
+        [hidden] { display: none; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+    <header>
+    <!--ダークモードのスイッチ-->
+    <!--labelのforとinputのidが一致する必要がある-->
+    <div class="mode-switch">
+        <label for="switch" class="switch_label">
+                <div class="switch">
+                    <input type="checkbox" id="switch">
+                    <span class="Mode">dark</span>
+                    <div class="circle"></div>
+                    <div class="base"></div>
+                </div>
+        </label>
+    </div>
+    <div class="logo"><h1>SECTOR：C-C</h1></div>
+</header>
+<!--ここまでヘッダー-->
+<!--ここからメイン-->
+    <h1>HTMLタグ一覧索引</h1>
+    <div id="search-bar" style="margin: 10px; display: flex;">
+        <input type="text" id="keyword" placeholder="全カテゴリーから検索..." style="width: 300px; height: 30px;">
+        <select id="category">
+            <option value="all">すべての区分</option>
+            <option value="category-HTML">HTML</option>
+            <option value="category-CSS">CSS</option>
+            <option value="category-JS">JavaScript</option>
+            <option value="category-meta">メタデータ</option>
+            <option value="category-block">ブロック要素</option>
+            <option value="category-inline">インライン</option>
+            <option value="category-class">属性要素</option>
+        </select>
+    </div>
+    <table class="data-table" data-category="HTML">
+        <colgroup>
+            <col style="width: 15%;">
+            <col style="width: 15%;">
+            <col style="width: 30%;">
+            <col style="width: 35%;">
+        </colgroup>
+        <thead>
+            <th>名前</th>
+            <th>区分</th>
+            <th>用途</th>
+            <th>注意事項</th>
+        </thead>
+        <tbody>
+        <tr class="item category-HTML">
+            <td class="name">!DOCTYPE html</td>
+            <td class="category-HTML category-meta">宣言</td>
+            <td class="usage">HTML5文書であることを宣言</td>
+            <td class="note">タグではない。ファイルの先頭に必ず記述する</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">htmlタグ</td>
+            <td class="category-HTML category-meta">ルート要素</td>
+            <td class="usage">HTML文書の全体を囲む</td>
+            <td class="note">lang属性（lang="ja"など）を指定するのが常識</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">headタグ</td>
+            <td class="category-HTML category-meta">メタデータ容器</td>
+            <td class="usage">文書の設定情報を格納</td>
+            <td class="note">ブラウザの画面上には表示されない</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">metaタグ</td>
+            <td class="category-HTML category-meta">メタデータ</td>
+            <td class="usage">文字コードやビューポートの設定</td>
+            <td class="note">終了タグ不要<br>charset="UTF-8"は必須。(文字化け防止のため)<br>スマホ対応<br>name="viewport" content="width=device-width, initial-scale=1.0"</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">linkタグ</td>
+            <td class="category-HTML category-meta">外部リソース参照</td>
+            <td class="usage">CSSファイルなどの読み込み</td>
+            <td class="note">rel属性で関係性（stylesheetなど）を指定する</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">scriptタグ</td>
+            <td class="category-HTML category-block">スクリプト</td>
+            <td class="usage">JavaScriptの実行・読み込み</td>
+            <td class="note">asyncやdefer属性で読み込みタイミングを制御できる</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">headerタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">ページの導入部やヘッダー</td>
+            <td class="note">直中に別のheaderを含まない</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">footerタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">ページのフッター</td>
+            <td class="note">直中に別のfooterを含まない</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">mainタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">文書のメインコンテンツ</td>
+            <td class="note">ページ内に複数設置しない（基本は1つ）</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">sectionタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">文書の論理的なセクション</td>
+            <td class="note">見出し（h1-h6）を伴うことが推奨される</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">articleタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">独立したコンテンツ</td>
+            <td class="note">単なるグループ化ならdivを使う</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">navタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">ナビゲーションリンク</td>
+            <td class="note">主要なリンク集に限定する</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">asideタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">補足コンテンツ</td>
+            <td class="note">メインの内容と直接関係ないサイドバー等に使う</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">preタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">整形済みテキスト</td>
+            <td class="note">空白や改行がそのまま表示される</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">blockquoteタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">引用</td>
+            <td class="note">cite属性でソースURLを指定可能</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">hrタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">段落レベルの区切り</td>
+            <td class="note">終了タグ不要。装飾目的で使わない（CSSでやる）</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">divタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">汎用的なグループ化</td>
+            <td class="note">意味付けがない場合に使う</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">tableタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">表のコンテナ</td>
+            <td class="note">レイアウト目的に使用してはならない</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">captionタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">表のタイトル</td>
+            <td class="note">tableタグの直後に配置する</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">colgroupタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">列のグループ化</td>
+            <td class="note">colタグを囲むために使用する</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">colタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">列の設定</td>
+            <td class="note">特定の列にスタイルを適用する際に使う</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">theadタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">表のヘッダーグループ</td>
+            <td class="note">trを必ず含めること</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">tbodyタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">表の本文グループ</td>
+            <td class="note">表のデータ部分を囲む</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">tfootタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">表のフッターグループ</td>
+            <td class="note">合計や要約を表示するのに使う</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">trタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">表の行</td>
+            <td class="note">thやtd以外を直接入れない</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">thタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">表の見出しセル</td>
+            <td class="note">scope属性で方向を明示するのが理想</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">tdタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">表のデータセル</td>
+            <td class="note">空セルでもタグは書いておくこと</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">formタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">入力フォーム全体を囲む</td>
+            <td class="note">actionとmethod属性は必須</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">ulタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">順序番号なしのリストグループに区分</td>
+            <td class="note">ulタグの下には必ずliタグが入る</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">olタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">順序番号付きのリストグループに区分</td>
+            <td class="note">olタグの下には必ずliタグが入る。<br>start=で開始番号を変更可能。<br>type=(a,A,i,I,1)で数字タイプ変更可能。<br>reverseで降順に。
+            </td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">tdタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">表のデータセル</td>
+            <td class="note">空セルでもタグは書いておくこと</td>
+        </tr>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">fieldsetタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">フォーム項目のグループ化</td>
+            <td class="note">関連する項目を枠で囲む</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">legendタグ</td>
+            <td class="category-HTML category-block">ブロック要素</td>
+            <td class="usage">fieldsetのタイトル</td>
+            <td class="note">fieldsetタグの直後に記述する</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">spanタグ</td>
+            <td class="category-HTML category-inline">インライン</td>
+            <td class="usage">文書内の一部を囲む</td>
+            <td class="note">スタイルを適用するための汎用的なタグ<br>(divのｐインライン版)<br>テキストの途中に差し込む事も出来る</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">strongタグ</td>
+            <td class="category-HTML category-inline">インライン</td>
+            <td class="usage">重要性の強調</td>
+            <td class="note">単なる太字目的で使わない（CSSでやる）</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">emタグ</td>
+            <td class="category-HTML category-inline">インライン</td>
+            <td class="usage">強調（アクセント）</td>
+            <td class="note">斜体になるが、あくまで論理的な強調</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">smallタグ</td>
+            <td class="category-HTML category-inline">インライン</td>
+            <td class="usage">注釈や免責事項</td>
+            <td class="note">「小さい文字」にする装飾目的ではない</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">codeタグ</td>
+            <td class="category-HTML category-inline">インライン</td>
+            <td class="usage">ソースコードの表示</td>
+            <td class="note">複数行ならpreタグと組み合わせる</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">brタグ</td>
+            <td class="category-HTML category-inline">インライン</td>
+            <td class="usage">改行</td>
+            <td class="note">文章の区切りに使う。多用して空白を空けるのはNG</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">subタグ</td>
+            <td class="category-HTML category-inline">インライン</td>
+            <td class="usage">下付き文字</td>
+            <td class="note">科学記号や注釈番号などに使う</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">supタグ</td>
+            <td class="category-HTML category-inline">インライン</td>
+            <td class="usage">上付き文字</td>
+            <td class="note">累乗や注釈番号などに使う</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">timeタグ</td>
+            <td class="category-HTML category-inline">インライン</td>
+            <td class="usage">日付や時刻の明示</td>
+            <td class="note">datetime属性で機械可読な形式を指定する</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">abbrタグ</td>
+            <td class="category-HTML category-inline">インライン</td>
+            <td class="usage">略語の表示</td>
+            <td class="note">title属性で正式名称を記述する</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">citeタグ</td>
+            <td class="category-HTML category-inline">インライン</td>
+            <td class="usage">作品のタイトル（引用元）</td>
+            <td class="note">人名には使わないこと</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">inputタグ</td>
+            <td class="category-HTML category-inline">インライン</td>
+            <td class="usage">入力フィールド（多機能）</td>
+            <td class="note">type属性で役割（text, radio等）を変える</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">textareaタグ</td>
+            <td class="category-HTML category-inline">インライン</td>
+            <td class="usage">複数行のテキスト入力</td>
+            <td class="note">rows, cols属性で初期サイズを指定する</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">labelタグ</td>
+            <td class="category-HTML category-inline">インライン</td>
+            <td class="usage">入力項目のラベル</td>
+            <td class="note">for属性を対応するinputのidと一致させる</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">selectタグ</td>
+            <td class="category-HTML category-inline">インライン</td>
+            <td class="usage">プルダウンメニュー</td>
+            <td class="note">内部にはoptionタグのみ配置する</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">optionタグ</td>
+            <td class="category-HTML category-inline">インライン</td>
+            <td class="usage">選択肢</td>
+            <td class="note">value属性が送信される値になる</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">buttonタグ</td>
+            <td class="category-HTML category-inline">インライン</td>
+            <td class="usage">ボタン</td>
+            <td class="note">type="submit"などで挙動を定義する</td>
+        <tr class="item category-HTML">
+            <td class="name">datalistタグ</td>
+            <td class="category-HTML category-inline">インライン</td>
+            <td class="usage">入力候補のリスト</td>
+            <td class="note">inputとlist属性で紐付ける</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">id属性</td>
+            <td class="category-HTML category-class">識別子</td>
+            <td class="usage">ページ内で唯一の要素を特定</td>
+            <td class="note">JSのDOM操作やアンカーリンク(目次、ページジャンプ)に使う<br>同じ名前のidは他の行においてはならない。<br>別の名前のidを別の行に書くのはOK。<br>ジャンプ先へ行くには、a href="#~~"でジャンプ</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">class属性</td>
+            <td class="category-HTML category-class">分類名</td>
+            <td class="usage">複数の要素に共通のスタイルを適用</td>
+            <td class="note">同じ名前を何度でも使える。CSS設計の核</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">style属性</td>
+            <td class="category-HTML category-class">インラインスタイル</td>
+            <td class="usage">要素に直接CSSを記述</td>
+            <td class="note">保守性が下がるため、緊急時以外は非推奨</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">title属性</td>
+            <td class="category-HTML category-class">補足情報</td>
+            <td class="usage">マウスホバー時にツールチップを表示</td>
+            <td class="note">アクセシビリティの補助として使う</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">data-*属性</td>
+            <td class="category-HTML category-class">カスタムデータ</td>
+            <td class="usage">独自の値を保持させる</td>
+            <td class="note">JSで「dataset」として取得可能。超重要</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">hidden属性</td>
+            <td class="category-HTML category-class">表示制御</td>
+            <td class="usage">要素を非表示にする</td>
+            <td class="note">CSSのdisplay:noneに近いが、論理的に隠す意味</td>
+        </tr>
+        <tr class="item category-HTML">
+            <td class="name">tabindex属性</td>
+            <td class="category-HTML category-class">フォーカス順序</td>
+            <td class="usage">キーボード操作の順序を指定</td>
+            <td class="note">アクセシビリティ対応で必要になる</td>
+        </tr>
+        </tbody>
+    </table>
+    <table class="data-table" data-category="CSS">
+        <colgroup>
+            <col style="width: 15%;">
+            <col style="width: 15%;">
+            <col style="width: 30%;">
+            <col style="width: 35%;">
+        </colgroup>
+        <thead>
+            <th>名前</th>
+            <th>区分</th>
+            <th>用途</th>
+            <th>注意事項</th>
+        </thead>
+        <tbody>
+            <tr class="item category-CSS">
+            <td class="name">selector(セレクタ)</td>
+            <td class="category-CSS">属性の総称</td>
+            <td class="usage">スタイルを当てる対象を指定</td>
+            <td class="note">＜●●＞=「要素名｛」<br>id=「#～～」<br>class=「.～～」<br>type=［type="○○"］<br>など、要素名などを組み合わせて指定<br>クラスに入れ子にしている要素を指定する際は、セレクタの間にスペースを空ける<br>例）.container li｛....｝</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">property</td>
+            <td class="category-CSS">プロパティ</td>
+            <td class="usage">変更したい属性（color, width等）</td>
+            <td class="note">CSSのルールセットを決定する最小単位</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">value</td>
+            <td class="category-CSS">値</td>
+            <td class="usage">プロパティに与える具体的な指示</td>
+            <td class="note">単位（px, %, rem）の使い分けが肝</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">box-model</td>
+            <td class="category-CSS">ボックスモデル</td>
+            <td class="usage">余白（margin, border, padding）の計算</td>
+            <td class="note">widthの計算に影響する。ここを理解せんと崩れる</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">media-query</td>
+            <td class="category-CSS">レスポンシブ</td>
+            <td class="usage">画面サイズに応じた分岐</td>
+            <td class="note">スマホ対応には必須。モバイルファーストで書く</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">margin</td>
+            <td class="category-CSS">外側余白</td>
+            <td class="usage">要素の外側のスペース</td>
+            <td class="note">相殺（Margin Collapse）という現象に注意が必要</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">padding</td>
+            <td class="category-CSS">内側余白</td>
+            <td class="usage">要素の内側のスペース</td>
+            <td class="note">背景色や背景画像はpaddingまで適用される<br>paddingのみの場合の指定<br>値が一つ…全方向<br>値が二つ…上下、左右<br>値が三つ…上、左右、下<br>値が四つ…上、右、下、左</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">border</td>
+            <td class="category-CSS">境界線</td>
+            <td class="usage">要素の枠線</td>
+            <td class="note">width, style, colorをまとめて指定する<br>下線をつけたりすることも可能<br>bottomなど方向指定も可能<br>太さ、種類( solid, dashed, dotted など )、色が指定可能</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">display</td>
+            <td class="category-CSS">表示形式</td>
+            <td class="usage">要素のレイアウトの挙動を決める</td>
+            <td class="note">flex, grid, block, none等の理解が最重要</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">position</td>
+            <td class="category-CSS">配置</td>
+            <td class="usage">要素の基準位置を指定</td>
+            <td class="note">absoluteやfixedは親要素との相対関係に注意</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">flexbox / grid</td>
+            <td class="category-CSS">レイアウト手法</td>
+            <td class="usage">要素を整列させる仕組み</td>
+            <td class="note">floatレイアウトは既に死語。現在はこれが主流</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">z-index</td>
+            <td class="category-CSS">重なり順</td>
+            <td class="usage">要素の前後関係</td>
+            <td class="note">数値が大きいほど手前に表示される</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">width / height</td>
+            <td class="category-CSS">サイズ</td>
+            <td class="usage">要素の幅と高さ</td>
+            <td class="note">box-sizing: border-box を指定するのが鉄則</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">color / background</td>
+            <td class="category-CSS">色彩</td>
+            <td class="usage">文字色と背景</td>
+            <td class="note">コントラスト比を意識しないとアクセシビリティ低下</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">font-size</td>
+            <td class="category-CSS">文字サイズ</td>
+            <td class="usage">テキストの大きさ</td>
+            <td class="note">相対単位（rem, em）を使うのが望ましい</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">opacity</td>
+            <td class="category-CSS">透明度</td>
+            <td class="usage">要素の透過率</td>
+            <td class="note">0〜1で指定。子要素も一緒に透過される</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">transition</td>
+            <td class="category-CSS">アニメーション</td>
+            <td class="usage">状態変化の滑らかさ</td>
+            <td class="note">hover時などの動きを制御する</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">transform</td>
+            <td class="category-CSS">変形</td>
+            <td class="usage">回転・移動・拡大縮小</td>
+            <td class="note">GPU負荷が少なく、高速に動かせる</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">list-style</td>
+            <td class="category-CSS">リストのスタイル</td>
+            <td class="usage">リスト項目の装飾</td>
+            <td class="note">noneで点が表示されない</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">float</td>
+            <td class="category-CSS">配置</td>
+            <td class="usage">要素を横並びにする</td>
+            <td class="note">親要素の幅内でのみ有効<br>古いレイアウト手法で、現在はflexboxやgridが主流<br>left or rightで指定</td>
+        </tr>
+        <tr class="item category-CSS">
+            <td class="name">container</td>
+            <td class="category-CSS">コンテナ</td>
+            <td class="usage">要素をまとめる</td>
+            <td class="note">mainの要素は三つに分かれている<br>"copy-container""content""contact-form"<br>親要素の幅内でのみ有効<br>古いレイアウト手法で、現在はflexboxやgridが主流<br>left or rightで指定</td>
+        </tr>
+    <!--
+        <tr class="item category-CSS">
+            <td class="name"></td>
+            <td class="category-CSS"></td>
+            <td class="usage"></td>
+            <td class="note"></td>
+        </tr>
+    -->
+        </tbody>
+    </table>
+    <table class="data-table" data-category="JS">
+        <colgroup>
+            <col style="width: 15%;">
+            <col style="width: 15%;">
+            <col style="width: 30%;">
+            <col style="width: 35%;">
+        </colgroup>
+        <thead>
+            <th>名前</th>
+            <th>区分</th>
+            <th>用途</th>
+            <th>注意事項</th>
+        </thead>
+        <tbody>
+            <!--
+            <tr class="item category-JS">
+                <td class="name"></td>
+                <td class="category-JS"></td>
+                <td class="usage"></td>
+                <td class="note"></td>
+            </tr>
+            -->
+            <tr class="item category-JS">
+                <td class="name">"" '' ``</td>
+                <td class="category-JS">要素</td>
+                <td class="usage">文字列として表す</td>
+                <td class="note">"＝ダブルクォーテーション<br>'＝シングルクォーテーション<br>``＝バッククォーテーション</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">;</td>
+                <td class="category-JS">区切り</td>
+                <td class="usage">文末に必ず記入</td>
+                <td class="note">セミコロン</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">//</td>
+                <td class="category-JS">コメントアウト</td>
+                <td class="usage">ウェブ上に表示させない</td>
+                <td class="note">注釈などに使える</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">+ - * / %</td>
+                <td class="category-JS">数値と計算</td>
+                <td class="usage">数字と合わせて使うと計算が出来る</td>
+                <td class="note">％＝「数字％(割る)数字」で余った数字を出す時に使う,<br>例）「21%5」…表示される数は「1」<br>文字列と合わせると連結したりできる<br>どちらかを変数にする事も出来る<br>変数再代入の略は+= -= *= /= %=</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">〉 〉= 〈 〈=</td>
+                <td class="category-JS">比較演算子(不等号)</td>
+                <td class="usage">値の比較を行う</td>
+                <td class="note">大小を比較するための演算子<br>〈 = より小さい<br>〈= 未満(含まない)<br>〉 より大きい<br>〉= 以上(含む)<br>記入する時は半角不等号で記入！</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">===/!==</td>
+                <td class="category-JS">比較演算子</td>
+                <td class="usage">値の比較を行う</td>
+                <td class="note">===は値と型が等しいかを比較し、!==は値または型が等しくないかを比較する</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">&&</td>
+                <td class="category-JS">論理演算子</td>
+                <td class="usage">○○かつ○○</td>
+                <td class="note">&&は両方の条件がtrueの場合にtrueを返す<br>前後が計算式でも使用可能</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">||</td>
+                <td class="category-JS">論理演算子</td>
+                <td class="usage">○○または○○</td>
+                <td class="note">||はどちらかの条件がtrueの場合にtrueを返す<br>前後が計算式でも使用可能</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">console.log</td>
+                <td class="category-JS">宣言</td>
+                <td class="usage">()内を実行する</td>
+                <td class="note">必ず括弧で括り、文字列にしたい時は""または``で括る<br>()内に数字や計算を入れる事も出来る<br>変数の時は”も‘も使用しない</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">let</td>
+                <td class="category-JS">変数定義</td>
+                <td class="usage">入れ物の名前(定義名)の値を変えることが出来る</td>
+                <td class="note">変数とはデータ(値や文字列)の入れ物<br>繰り返し使う値がある場合に使える<br>let 定義名 = 値で代入できる<br>例）let 名前=Chan で「名前」と書いてある所がChanになる<br>必ず定義名より上に書くこと！<br>途中で変える場合は定義名＝○○で途中入力(その時letは不要)<br>↑を代用して、「定義名と計算」で変数自体を変える事も出来る(括弧で囲まなくても良い)<br>例）定義名＝定義名＋"変えた"；⇒「定義名変えた」<br>定義名は必ず英単語にする事</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">const</td>
+                <td class="category-JS">定数定義</td>
+                <td class="usage">入れ物の名前(定義名)を一定にする</td>
+                <td class="note">使い方はletと同じ<br>letとは違いかえる事は出来ない<br>再代入の可否でvarと使い分ける</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">$</td>
+                <td class="category-JS">連結</td>
+                <td class="usage">文字列の中に定数を埋め込める</td>
+                <td class="note">`文字列${定数}`の形式で使用<br>必ずバッククォーテーションで囲む</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">条件分岐</td>
+                <td class="category-JS">制御構造</td>
+                <td class="usage">条件に応じて処理を分ける</td>
+                <td class="note">if文やswitch文で使用</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">if</td>
+                <td class="category-JS">条件分岐</td>
+                <td class="usage">条件に応じて処理を分ける</td>
+                <td class="note">if文で使用<br>if(条件式){処理を書き込む}<br>↑「もし(条件式)なら処理を行う。」<br>処理を書き込むときは必ず字下げする事！</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">else</td>
+                <td class="category-JS">条件分岐</td>
+                <td class="usage">if文の条件に該当しない場合の処理</td>
+                <td class="note">Excelの負に該当する処理<br>if文の条件に該当しない場合(false)に実行される<br>ifを閉じた｝のすぐから書き始める事！<br>else ifでさらに分岐させることも可能</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">switch</td>
+                <td class="category-JS">条件分岐</td>
+                <td class="usage">複数の条件に応じて処理を分ける</td>
+                <td class="note">switch(条件の値){処理}で使用<br>caseを使用すれば複数の条件を指定できる<br>(caseはswitch内に書き込むこと！)<br>caseを使う際はbreakを忘れずに</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">default</td>
+                <td class="category-JS">条件分岐</td>
+                <td class="usage">すべてのcaseに該当しない場合の処理</td>
+                <td class="note">switch文の最後に記述<br>caseのどの条件に該当しない場合に実行される</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">true/false</td>
+                <td class="category-JS">真偽値</td>
+                <td class="usage">条件の評価結果</td>
+                <td class="note">trueは「真」、falseは「偽」という意味</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">querySelector</td>
+                <td class="category-JS">DOM取得</td>
+                <td class="usage">HTML要素をJSで特定する</td>
+                <td class="note">CSSセレクタと同じ形式で指定可能</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">addEventListener</td>
+                <td class="category-JS">イベント監視</td>
+                <td class="usage">クリック等の操作を検知する</td>
+                <td class="note">クリック（click）や入力（input）のトリガー</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">classList</td>
+                <td class="category-JS">クラス制御</td>
+                <td class="usage">要素のclassを動的に書き換える</td>
+                <td class="note">CSSで定義した状態をJSで切り替えるのに多用</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">textContent</td>
+                <td class="category-JS">テキスト操作</td>
+                <td class="usage">要素の中身の文字を書き換える</td>
+                <td class="note">innerHTMLはセキュリティリスクが高いので非推奨</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">fetch</td>
+                <td class="JScategory">非同期通信</td>
+                <td class="usage">外部からデータを取得する</td>
+                <td class="note">API通信の基本。Promise（非同期処理）の理解が必要</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">querySelectorAll</td>
+                <td class="category-JS">要素群取得</td>
+                <td class="usage">合致する全要素をリストで取得</td>
+                <td class="note">forEachでループ処理が可能</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">createElement</td>
+                <td class="category-JS">要素生成</td>
+                <td class="usage">メモリ上で新しいHTML要素を作成</td>
+                <td class="note">appendChildでDOMに追加するまで画面に出ない</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">appendChild</td>
+                <td class="category-JS">要素追加</td>
+                <td class="usage">子要素として末尾に追加</td>
+                <td class="note">既存の要素を移動させるのにも使える</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">remove</td>
+                <td class="category-JS">要素削除</td>
+                <td class="usage">DOMから自身を削除</td>
+                <td class="note">IE非対応（今は気にせんでいい）</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">getAttribute / setAttribute</td>
+                <td class="category-JS">属性操作</td>
+                <td class="usage">HTML属性の取得・変更</td>
+                <td class="note">dataset系の方が現代的で推奨される</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">console.log</td>
+                <td class="category-JS">デバッグ</td>
+                <td class="usage">コンソールにログを出力</td>
+                <td class="note">開発中、自分の書いたコードが動いているかの確認に必須</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">forEach</td>
+                <td class="category-JS">ループ</td>
+                <td class="usage">配列の各要素に対して処理を実行</td>
+                <td class="note">for文より可読性が高い</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">if / else</td>
+                <td class="category-JS">条件分岐</td>
+                <td class="usage">論理的条件による処理の分岐</td>
+                <td class="note">ネスト（入れ子）を深くしすぎるとバグの温床になる</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">document</td>
+                <td class="category-JS">ルートオブジェクト</td>
+                <td class="usage">DOMツリー全体の頂点</td>
+                <td class="note">ここから全ての要素にアクセスする</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">window</td>
+                <td class="category-JS">ブラウザの親</td>
+                <td class="usage">ブラウザの表示ウィンドウ自体</td>
+                <td class="note">JavaScriptのグローバルスコープそのもの</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">parentNode / childNodes</td>
+                <td class="category-JS">階層関係</td>
+                <td class="usage">親要素、子要素への参照</td>
+                <td class="note">DOMツリーを探索する時に必須のプロパティ</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">firstChild / lastChild</td>
+                <td class="category-JS">子要素探索</td>
+                <td class="usage">最初と最後の子要素</td>
+                <td class="note">空白（改行）もノードとして認識されることに注意</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">children</td>
+                <td class="category-JS">要素探索</td>
+                <td class="usage">HTML要素のみのコレクション</td>
+                <td class="note">firstChildよりこっちを使う方が現実的</td>
+            </tr>
+            <tr class="item category-JS">
+                <td class="name">parentElement</td>
+                <td class="category-JS">要素の親</td>
+                <td class="usage">親の要素ノード</td>
+                <td class="note">parentNodeとの違い（ノードの種類）を理解せよ</td>
+            </tr>
+        </tbody>
+    </table>
+    <script src="/js/background.js"></script>
+    <script src="/js/books.js"></script>
+</body>
+</html>
